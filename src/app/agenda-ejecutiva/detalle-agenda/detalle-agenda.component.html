@@ -1,11 +1,6 @@
 <div class="row">
     <div class="col">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a (click)="gotToHome()" href="#">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Configurar Cita</li>
-            </ol>
-        </nav>
+        <app-ubicator [rutas]="ruta"></app-ubicator>
     
         <form [formGroup]="eventForm" (ngSubmit)="onSubmit(eventForm.value)">
 
@@ -24,13 +19,21 @@
             </div>
             <div class="form-group">
                 <label for="fechaVisita">Fecha Visita</label>
-                <input type="text" class="form-control" id="fechaVisita" aria-describedby="fehcaVisitaHelp" placeholder="Fecha Visita" formControlName="startDate">
+                <div class="input-group">
+                  <input class="form-control" aria-describedby="fehcaVisitaHelp" placeholder="dd-mm-yyyy" name="dp" navigation="arrows" ngbDatepicker #d="ngbDatepicker" formControlName="startDate">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                  </div>
+                </div>
                 <small id="fehcaVisitaHelp" class="form-text text-muted">La fecha de visita es el cuando del evento.</small>
             </div>
             <div class="form-group">
-                <label for="fechaVisita">Hora Visita</label>
-                <input type="text" class="form-control" id="horaVista" aria-describedby="horaVisitaHelp" placeholder="Hora Visita" formControlName="startHour">
-                <small id="horaVisitaHelp" class="form-text text-muted">La hora de visita es el momento del evento.</small>
+                <label for="horaVisita">Hora Visita</label>
+                <select class="form-control" id="horaVisita" aria-describedby="horaVisitaHelp" formControlName="startHour">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let hora of horasDelDia" [value]="hora">{{ hora }}</option>
+                </select>
+                <small id="horaVisitaHelp" class="form-text text-muted">La hora de visita es en formato 24 h.</small>
             </div>
 
 

@@ -25,6 +25,7 @@ export class AgendaEjecutivaComponent  {
     { id: 1, title: 'Event Now', start: new Date() }
   ];
   locale = esLocale;
+  ruta = ['Agenda'];
 
   
   handleDateClick(arg) {

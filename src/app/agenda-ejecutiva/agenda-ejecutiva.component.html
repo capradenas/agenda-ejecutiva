@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-6">
+      <div class="form-group">
+          <label for="empresa">Empresa</label>
+          <select class="form-control" id="empresa" aria-describedby="empresaHelp">
+              <option value="">Seleccione</option>
+              <option value="opt1">Opcion #1</option>
+          </select>
+          <small id="empresaHelp" class="form-text text-muted">Selecciona la Empresa para filtrar.</small>
+      </div>
+  </div>
+</div>
+
+<full-calendar
+      #calendar
+      defaultView="dayGridMonth"
+      [header]="{
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      }"
+      [plugins]="calendarPlugins"
+      [events]="calendarEvents"
+      (dateClick)="handleDateClick($event)"
+      (eventClick)="handleEventClick($event)"
+      [locale]="locale"
+    ></full-calendar>

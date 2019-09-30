@@ -1,0 +1,23 @@
+<app-ubicator [rutas]="ruta"></app-ubicator>
+
+<div class="row">
+  <div class="col">
+      <app-companias-asociadas (seleccion)="handleCompanyChange($event)"></app-companias-asociadas>
+  </div>
+</div>
+<pre>Company: {{ companiaSeleccionada }}</pre>
+
+<full-calendar
+      #calendar
+      defaultView="dayGridMonth"
+      [header]="{
+        left: 'prev,next today',
+        center: 'title',
+        right: ''
+      }"
+      [plugins]="calendarPlugins"
+      [events]="calendarEvents"
+      (dateClick)="handleDateClick($event)"
+      (eventClick)="handleEventClick($event)"
+      [locale]="locale"
+    ></full-calendar>

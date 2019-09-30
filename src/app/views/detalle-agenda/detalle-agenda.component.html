@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col">
+        <app-ubicator [rutas]="ruta"></app-ubicator>
+    
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit(eventForm.value)">
+
+            <app-companias-asociadas formControlName="company" ></app-companias-asociadas>
+            <div class="row">
+                <div class="form-group col">
+                    <label for="fechaVisita">Fecha Primera Visita</label>
+                    <div class="input-group">
+                      <input class="form-control" aria-describedby="fehcaVisitaHelp" placeholder="dd-mm-yyyy" name="dp" navigation="arrows" ngbDatepicker #d="ngbDatepicker" formControlName="startDate">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                      </div>
+                    </div>
+                    <small id="fehcaVisitaHelp" class="form-text text-muted">Cunado es la primera visita a la empresa.</small>
+                </div>
+                <div class="form-group col">
+                    <label for="periocidad">Periocidad</label>
+                    <select class="form-control" id="periocidad" aria-describedby="periocidadHelp" formControlName="periodicity">
+                        <option value="">Seleccione</option>
+                        <option value="60">60 dias</option>
+                        <option value="90">90 dias</option>
+                        <option value="120">120 dias</option>
+                        <option value="180">180 dias</option>
+                        <option value="360">360 dias</option>
+                    </select>
+                    <small id="periocidadHelp" class="form-text text-muted">Cada cuanto se desencadena el evento.</small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="empresa">Comentarios</label>
+                <textarea class="form-control"  formControlName="comments"></textarea>
+                <small id="empresaHelp" class="form-text text-muted">Debes seleccionar la empresa para el evento.</small>
+            </div>
+
+            <ngb-alert [dismissible]="false" type="primary">
+                <strong>Nota:</strong> Esta herramienta genera agendamiento con un umbral maximo de 2 años.
+              </ngb-alert>
+
+            <div class="bg-light py-md-2">
+                <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid">Guardar</button>
+                <button class="btn btn-secondary btn-sm" type="button" (click)="goToHome()">Volver</button>
+            </div>
+        </form>
+    </div>
+</div>

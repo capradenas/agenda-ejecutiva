@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AgendaEjecutivaComponent } from "./agenda-ejecutiva/agenda-ejecutiva.component";
-import { DetalleAgendaComponent } from './agenda-ejecutiva/detalle-agenda/detalle-agenda.component';
+import { AgendaEjecutivaComponent } from "./views/agenda-ejecutiva/agenda-ejecutiva.component";
+import { DetalleAgendaComponent } from './views/detalle-agenda/detalle-agenda.component';
 
 
 const routes: Routes = [
@@ -11,6 +11,10 @@ const routes: Routes = [
   },
   {
     path: 'planificador/:type/:wildcard',
+    component: DetalleAgendaComponent,
+  },
+  {
+    path: 'planificador/:type/:wildcard/:company',
     component: DetalleAgendaComponent,
   }
 

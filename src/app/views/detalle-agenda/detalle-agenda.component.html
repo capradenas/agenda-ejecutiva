@@ -36,9 +36,7 @@
                 <small id="empresaHelp" class="form-text text-muted">Debes seleccionar la empresa para el evento.</small>
             </div>
 
-            <ngb-alert [dismissible]="false" type="primary">
-                <strong>Nota:</strong> Esta herramienta genera agendamiento con un umbral maximo de 2 años.
-              </ngb-alert>
+            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate"></app-previsualizador>
 
             <div class="bg-light py-md-2">
                 <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid">Guardar</button>

@@ -1,0 +1,28 @@
+
+@mixin capital-let {
+    text-transform: capitalize;
+}
+
+
+.plan-item {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.plan-item ul {
+    text-align: left;
+}
+
+.plan-item hr {
+    margin: 0 0 0 0;
+}
+
+
+.plan-item small {
+    @include capital-let();
+}
+
+.plan-item li {
+    @include capital-let();
+}

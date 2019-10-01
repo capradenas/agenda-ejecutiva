@@ -21,8 +21,7 @@ export class DetalleAgendaComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
-    private cookieService: CookieService,
-    private empresasService: EmpresasService
+    private cookieService: CookieService
   ) { 
 
     this.eventForm = this.formBuilder.group({

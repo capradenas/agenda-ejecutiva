@@ -12,6 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { CompaniasAsociadasComponent } from './components/companias-asociadas/companias-asociadas.component';
+import { PrevisualizadorComponent } from './components/previsualizador/previsualizador.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CompaniasAsociadasComponent } from './components/companias-asociadas/co
     AgendaEjecutivaComponent,
     DetalleAgendaComponent,
     UbicatorComponent,
-    CompaniasAsociadasComponent
+    CompaniasAsociadasComponent,
+    PrevisualizadorComponent
   ],
   imports: [
     BrowserModule,

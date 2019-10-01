@@ -1,0 +1,14 @@
+<p>Previsualizador</p>
+<div class="row mb-3 mx-1">
+    <div *ngFor="let momento of fechasVisita" class="col-2 border border-info plan-item">
+        <small>{{ momento.month }} {{momento.year}}</small>
+        <hr/>
+        <ul>
+            <li>{{momento.weekDay}} {{momento.day}}</li>
+        </ul>
+    </div>
+</div>
+
+<ngb-alert [dismissible]="false" type="primary">
+    <strong>Nota:</strong> Esta herramienta genera agendamiento con un umbral maximo de 2 años.
+</ngb-alert>

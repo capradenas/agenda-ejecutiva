@@ -18,11 +18,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class CompaniasAsociadasComponent implements OnInit, ControlValueAccessor {
   
-  companias;
-  @Output() seleccion: EventEmitter<string> = new EventEmitter<string>();
+  companias: any;
+  @Output() seleccion: EventEmitter<any> = new EventEmitter<any>();
   
   @Input('value')
-  myModelValue = '';
+  myModelValue: string = '';
 
   @Input()
   leyenda='Selecciona la Empresa para filtrar.';

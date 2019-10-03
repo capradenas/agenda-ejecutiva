@@ -36,7 +36,7 @@
                 <small id="empresaHelp" class="form-text text-muted">Debes seleccionar la empresa para el evento.</small>
             </div>
 
-            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate"></app-previsualizador>
+            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" (cambiaEstado)="recibeFechas($event)"></app-previsualizador>
 
             <div class="bg-light py-md-2">
                 <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid">Guardar</button>

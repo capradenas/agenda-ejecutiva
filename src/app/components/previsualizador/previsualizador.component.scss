@@ -1,13 +1,11 @@
-
-@mixin capital-let {
-    text-transform: capitalize;
-}
-
-
 .plan-item {
     margin-right: 10px;
     margin-bottom: 10px;
     text-align: center;
+    cursor: pointer;    
+    &:hover{
+        background-color: beige;
+    }
 }
 
 .plan-item ul {
@@ -19,10 +17,3 @@
 }
 
 
-.plan-item small {
-    @include capital-let();
-}
-
-.plan-item li {
-    @include capital-let();
-}

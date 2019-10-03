@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -10,6 +10,10 @@ export class PrevisualizadorComponent implements OnChanges {
   
 
   constructor() { }
+
+  @Output()
+  cambiaEstado: EventEmitter<any> = new EventEmitter<any>();
+
 
   _fechaInicial:Date = null;
 
@@ -25,11 +29,8 @@ export class PrevisualizadorComponent implements OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-
-    console.log({ fechasVisita: this.fechasVisita })
     this.renderVisitas();
-    
-    
+    this.cambiaEstado.emit(this.fechasVisita);
   }
 
   private renderVisitas() {
@@ -43,7 +44,7 @@ export class PrevisualizadorComponent implements OnChanges {
           fec = fec.add(2,'days');
         }else if(fec.toDate().toLocaleString('default', { weekday: 'long' }) === 'domingo'){
           fec = fec.add(1, 'days');
-        }  
+        }
 
         this.fechasVisita.push({
           month: fec.toDate().toLocaleString('default', { month: 'long' }),

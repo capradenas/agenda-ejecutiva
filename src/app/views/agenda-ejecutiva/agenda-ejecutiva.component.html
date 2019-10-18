@@ -1,11 +1,8 @@
-<app-ubicator [rutas]="ruta"></app-ubicator>
-
 <div class="row">
   <div class="col">
-      <app-companias-asociadas (seleccion)="handleCompanyChange($event)"></app-companias-asociadas>
+      <app-companias-asociadas (seleccion)="handleCompanyChange($event)" (limpia)="hndleCompanyClear()"></app-companias-asociadas>
   </div>
 </div>
-<pre>Company: {{ companiaSeleccionada | json }}</pre>
 
 <full-calendar
       #calendar

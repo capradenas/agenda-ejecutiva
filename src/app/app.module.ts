@@ -13,6 +13,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { CompaniasAsociadasComponent } from './components/companias-asociadas/companias-asociadas.component';
 import { PrevisualizadorComponent } from './components/previsualizador/previsualizador.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ItemRankComponent } from './components/item-rank/item-rank.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { PrevisualizadorComponent } from './components/previsualizador/previsual
     DetalleAgendaComponent,
     UbicatorComponent,
     CompaniasAsociadasComponent,
-    PrevisualizadorComponent
+    PrevisualizadorComponent,
+    ItemRankComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,8 @@ import { PrevisualizadorComponent } from './components/previsualizador/previsual
     FormsModule, 
     ReactiveFormsModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    NgSelectModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

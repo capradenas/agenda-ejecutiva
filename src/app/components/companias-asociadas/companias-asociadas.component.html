@@ -1,8 +1,20 @@
 <div class="form-group">
     <label for="empresa">Empresa</label>
-    <select class="form-control" id="empresa" aria-describedby="empresaHelp"  [(ngModel)]="myModelValue" (change)="myChange()">
-        <option value="">Seleccione</option>
-        <option *ngFor="let compania of companias" [value]="compania.ID" >{{ compania.NombreEmpresa }}</option>
-    </select>
+    <ng-select 
+        placeholder="Buscar.."
+        [items]="companias"
+        bindLabel="NombreEmpresa"
+        autofocus
+        bindValue="ID"
+        [(ngModel)]="myModelValue"
+        id="empresa"
+        (change)="myChange()" 
+        [disabled]="desabilitado"
+        (clear)="onClear()"
+        >
+    </ng-select>
     <small id="empresaHelp" class="form-text text-muted">{{ leyenda }}</small>
 </div>
+
+
+

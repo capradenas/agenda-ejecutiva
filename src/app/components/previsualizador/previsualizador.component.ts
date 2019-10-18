@@ -14,6 +14,8 @@ export class PrevisualizadorComponent implements OnChanges {
   @Output()
   cambiaEstado: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output()
+  itemClick: EventEmitter<any> = new EventEmitter<any>();
 
   _fechaInicial:Date = null;
 
@@ -52,11 +54,14 @@ export class PrevisualizadorComponent implements OnChanges {
           weekDay: fec.toDate().toLocaleString('default', { weekday: 'long' }).substr(0,3) + '.',
           day: fec.toDate().getDate().toLocaleString().padStart(2,'0'),
           date: fec.toDate()
-        })  
+        })
 
         fec = fec.add(this.periocidad, 'days');
       }
     }
-    
+  }
+
+  onItemClick(itemValue: any){
+    this.itemClick.emit(itemValue);
   }
 }

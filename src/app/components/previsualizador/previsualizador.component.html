@@ -1,6 +1,6 @@
 <p>Previsualizador</p>
 <div class="row mb-3 mx-1">
-    <div *ngFor="let momento of fechasVisita" class="col-2 border border-info plan-item" title="Gestionar esta visita">
+    <div *ngFor="let momento of fechasVisita" class="col-2 border border-info plan-item" title="Gestionar esta visita" (click)="onItemClick(momento)">
         <small class="text-capitalize">{{ momento.month }} {{momento.year}}</small>
         <hr/>
         <ul>

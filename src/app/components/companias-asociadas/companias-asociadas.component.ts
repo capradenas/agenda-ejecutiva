@@ -20,12 +20,17 @@ export class CompaniasAsociadasComponent implements OnInit, ControlValueAccessor
   
   companias: any;
   @Output() seleccion: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output() limpia: EventEmitter<any> = new EventEmitter<any>();
   
   @Input('value')
-  myModelValue: string = '';
+  myModelValue: string;
 
   @Input()
   leyenda='Selecciona la Empresa para filtrar.';
+
+  @Input()
+  desabilitado: boolean = false;
 
   constructor(
     private cookieService: CookieService,
@@ -52,8 +57,7 @@ export class CompaniasAsociadasComponent implements OnInit, ControlValueAccessor
   set value(value: string){
     this.myModelValue = value;
     this.onChange(value);
-    this.onTouched();
-    
+    this.onTouched();    
   }
 
   writeValue(value: any): void {
@@ -71,6 +75,10 @@ export class CompaniasAsociadasComponent implements OnInit, ControlValueAccessor
   myChange(){
     this.value = this.myModelValue;
     this.seleccion.emit(this.myModelValue);
+  }
+
+  onClear() {
+    this.limpia.emit();
   }
 
 

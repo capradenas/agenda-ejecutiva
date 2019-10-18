@@ -1,10 +1,11 @@
-import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment'; 
 import { CookieService } from 'ngx-cookie-service';
 import { EmpresasService } from './../../services/empresas.service';
-import Agenda from 'src/app/models/agenda.model';
+import Agenda from './../../models/agenda.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -15,9 +16,14 @@ import Agenda from 'src/app/models/agenda.model';
 export class DetalleAgendaComponent implements OnInit {
 
   eventForm: FormGroup;
+  managementForm: FormGroup;
   ruta = ['Agenda'];
   fechasVisita: Date[];
-  
+  esNuevo: boolean = true;
+  closeResult: string;
+  idCita?: number = null;
+  type: string;
+  modeloPrueba: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +31,7 @@ export class DetalleAgendaComponent implements OnInit {
     private router: Router,
     private cookieService: CookieService,
     private empresaService: EmpresasService,
+    private modalService: NgbModal
   ) { 
 
     this.eventForm = this.formBuilder.group({
@@ -33,6 +40,23 @@ export class DetalleAgendaComponent implements OnInit {
       comments: '',
       periodicity: ['', Validators.required],
     });
+
+    this.managementForm = this.formBuilder.group({
+      nombre: ['', Validators.required],
+      estamento: ['', Validators.required],
+      cargo: ['', Validators.required],
+      telefono: ['', Validators.required],
+      email: ['', Validators.required],
+      evalCredito: ['', Validators.required],
+      evalSil: ['', Validators.required],
+      evalServicio: ['', Validators.required],
+      evalPcom: ['', Validators.required],
+      evalAsfam: ['', Validators.required],
+      evalGlobal: ['', Validators.required],
+      comentarios: ['', Validators.required],
+      alerta: '',
+      detalleAlerta: ''
+    })
     
   }
 
@@ -43,10 +67,11 @@ export class DetalleAgendaComponent implements OnInit {
     }
 
     let wildcard = this.route.snapshot.paramMap.get('wildcard');
-    let type = this.route.snapshot.paramMap.get('type');
+    this.type = this.route.snapshot.paramMap.get('type');
     let company = this.route.snapshot.paramMap.get('company');
 
-    if(type === 'nueva-cita'){
+    if(this.type === 'nueva-cita'){
+      this.esNuevo = true;
       this.ruta.push('Nueva Cita');
 
       let momento = moment(wildcard);
@@ -62,9 +87,31 @@ export class DetalleAgendaComponent implements OnInit {
 
 
 
-    }else if(type === 'editar-cita'){
+    }else if(this.type === 'editar-cita'){
+      this.esNuevo = false;
       this.ruta.push('Modificar Cita');
       console.log('editar')
+      let vals = await this.empresaService.obtenerDetalleAgenda(Number.parseInt(wildcard))
+      vals.subscribe(
+        (detAgenda: any) => {
+          console.log({detAgenda});
+          let momento = moment(detAgenda.fechaPrimeraVisita);
+          let f = momento.toArray()
+          this.eventForm.setValue({
+            startDate: { year: f[0], month: (f[1]+1), day: f[2], _d: momento.toDate() },
+            company: detAgenda.idAnexoEmpresa,
+            comments: detAgenda.comentarios,
+            periodicity: detAgenda.periocidad
+          });
+
+          this.eventForm.disable();
+
+        },
+        error => {
+          console.log({ error });
+        }
+      )
+      
     }
   }
 
@@ -91,7 +138,6 @@ export class DetalleAgendaComponent implements OnInit {
         console.log({ agen })
         alert('Datos Guardados con Exito');
         this.goToHome();
-        
       },
       (error: any)=>{
         console.log({ error })
@@ -105,6 +151,47 @@ export class DetalleAgendaComponent implements OnInit {
 
   recibeFechas(lasFechas: any){
     this.fechasVisita = lasFechas.map((f:any)=>f.date);
+  }
+
+  open(content, itemValue: any) {
+    if(this.type === 'editar-cita'){
+      console.log({ itemValue });
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl' }).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+        this.closeResult = `Dismissed ${reason}`;
+      });
+    }
+  }
+
+  onSubmitGestion(){
+    const userInfo = {
+      rutEjecutivo: this.cookieService.get('Rut'), 
+      codigoSucursal: Number.parseInt(this.cookieService.get('Oficina')),  
+      token: this.cookieService.get('Token')
+    };
+
+    let objetoMaestro = {
+      userInfo,
+      form: this.managementForm.value
+    }
+
+    this.managementForm.reset();  
+
+    console.log({ objetoMaestro });
+  }
+
+  onClickAlertCheck(event: any){
+    const isChecked = event.target.checked; 
+    const detalleAlertaControl = this.managementForm.get('detalleAlerta');
+
+    if(isChecked){
+      detalleAlertaControl.setValidators(Validators.required);
+    }else{
+      detalleAlertaControl.clearValidators();
+    }
+
+    detalleAlertaControl.updateValueAndValidity();
   }
 
 }

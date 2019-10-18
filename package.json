@@ -25,6 +25,7 @@
     "@fullcalendar/interaction": "^4.3.0",
     "@fullcalendar/timegrid": "^4.3.0",
     "@ng-bootstrap/ng-bootstrap": "^5.1.1",
+    "@ng-select/ng-select": "^3.0.7",
     "moment": "^2.24.0",
     "ngx-cookie-service": "^2.2.0",
     "rxjs": "~6.4.0",

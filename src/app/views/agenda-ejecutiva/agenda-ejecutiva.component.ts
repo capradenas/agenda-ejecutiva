@@ -32,19 +32,20 @@ export class AgendaEjecutivaComponent implements OnInit  {
   locale = esLocale;
   ruta = ['Agenda'];
   companiaSeleccionada='';
+  userInfo: UserInfo;
 
   async ngOnInit() {
     if(!this.cookieService.check('Token')){
       alert('No hay usuario desde MDN, Se debe Salir')
       return false;
     }
-    const userInfo: UserInfo = {
+    this.userInfo = {
       rutEjecutivo: this.cookieService.get('Rut'), 
       codigoSucursal: Number.parseInt(this.cookieService.get('Oficina')),
       token: this.cookieService.get('Token') 
     };
 
-    let citasRs = await this.companiaService.listarCitas(userInfo);
+    let citasRs = await this.companiaService.listarCitas(this.userInfo, {});
     citasRs.subscribe(
       citas => {
         this.calendarEvents = citas
@@ -68,10 +69,36 @@ export class AgendaEjecutivaComponent implements OnInit  {
   }
 
   handleEventClick(arg){
-    this.router.navigateByUrl(`/planificador/editar-cita/${arg.event.id}`);
+    this.router.navigateByUrl(`/planificador/editar-cita/${arg.event.groupId}`);
   }
 
-  handleCompanyChange(value: any){
+  async handleCompanyChange(value: any){
     this.companiaSeleccionada = value;
+    
+    let citasRs = await this.companiaService.listarCitas(this.userInfo, { anexo: value });
+    
+    if(value != null){
+      citasRs.subscribe(
+        citas => {
+          this.calendarEvents = citas
+        },
+        error=>{
+          console.log({error})
+        }
+      )
+    }
+    
+  }
+
+  async hndleCompanyClear(){
+    let citasRs = await this.companiaService.listarCitas(this.userInfo, {});
+    citasRs.subscribe(
+      citas => {
+        this.calendarEvents = citas
+      },
+      error=>{
+        console.log({error})
+      }
+    )
   }
 }

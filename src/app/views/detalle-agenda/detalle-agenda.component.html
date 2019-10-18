@@ -1,10 +1,8 @@
 <div class="row">
     <div class="col">
-        <app-ubicator [rutas]="ruta"></app-ubicator>
-    
         <form [formGroup]="eventForm" (ngSubmit)="onSubmit(eventForm.value)">
 
-            <app-companias-asociadas formControlName="company" ></app-companias-asociadas>
+            <app-companias-asociadas formControlName="company" [desabilitado]="!esNuevo"></app-companias-asociadas>
             <div class="row">
                 <div class="form-group col">
                     <label for="fechaVisita">Fecha Primera Visita</label>
@@ -36,12 +34,135 @@
                 <small id="empresaHelp" class="form-text text-muted">Debes seleccionar la empresa para el evento.</small>
             </div>
 
-            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" (cambiaEstado)="recibeFechas($event)"></app-previsualizador>
+            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" (cambiaEstado)="recibeFechas($event)" (itemClick)="open(content, $event)"></app-previsualizador>
 
             <div class="bg-light py-md-2">
-                <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid">Guardar</button>
+                <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid" *ngIf="esNuevo">Guardar</button>
                 <button class="btn btn-secondary btn-sm" type="button" (click)="goToHome()">Volver</button>
-            </div>
+            </div>    
         </form>
+
+        
+        
     </div>
 </div>
+
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Gestión Visitas</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ngb-tabset>
+        <ngb-tab>
+          <ng-template ngbTabTitle><b>Nueva Gestión</b></ng-template>
+          <ng-template ngbTabContent>
+            <form class="my-3" [formGroup]="managementForm">
+              <div class="row">
+                <div class="col">
+                  <b>Contacto</b>
+                  <hr/>    
+                </div>
+              </div>
+              <div class="row">
+                  <div class="form-group col">
+                    <label>Nombre Contacto</label>
+                    <input type="text" class="form-control" formControlName="nombre">
+                    <small class="form-text text-muted">Nombre del contacto de la compañía.</small>
+                  </div>
+
+                  <div class="form-group col">
+                      <label>Estamento</label>
+                      <select class="form-control" formControlName="estamento">
+                        <option value="">Selecciona</option>
+                        <option value="EMPRESA">Empresa</option>
+                        <option value="SINDICATO">Sindicato</option>
+                      </select>
+                      <small class="form-text text-muted">El estamento corresponde a la directiva del contacto.</small>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="form-group col">
+                    <label>Cargo</label>
+                    <input type="text" class="form-control" formControlName="cargo">
+                    <small class="form-text text-muted">Cargo del Contacto con respecto al estamento.</small>
+                  </div>
+                  <div class="form-group col">
+                    <label>Telefono</label>
+                    <input type="text" class="form-control" formControlName="telefono">
+                    <small class="form-text text-muted">Telefono del contacto.</small>
+                  </div>
+                  <div class="form-group col">
+                    <label>Email</label>
+                    <input type="text" class="form-control" formControlName="email">
+                    <small class="form-text text-muted">Email del contacto.</small>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <b>Suvery</b>
+                  <hr/>    
+                </div>
+              </div>
+              <div class="row">
+                  <app-item-rank class="col" nombre="credito" titulo="Crédito" leyenda="Evaluación con respecto a Créditos" formControlName="evalCredito"></app-item-rank>
+                  <app-item-rank class="col" nombre="sil" titulo="Licencias Médicas" leyenda="Evaluación con respecto a SIL" formControlName="evalSil"></app-item-rank>
+              </div>
+              <div class="row">
+                  <app-item-rank class="col" nombre="servicio" titulo="Servicio" leyenda="Evaluación con respecto a Servicios" formControlName="evalServicio"></app-item-rank>
+                  <app-item-rank class="col" nombre="pcom" titulo="Prestaciones Complementarias" leyenda="Evaluación con respecto a Prestaciones Complementarias" formControlName="evalPcom"></app-item-rank> 
+              </div>
+              <div class="row">
+                  <app-item-rank class="col" nombre="asfam" titulo="ASFAM" leyenda="Evaluación con respecto a ASFAM" formControlName="evalAsfam"></app-item-rank>
+                  <app-item-rank class="col" nombre="global" titulo="Global" leyenda="Evaluación Global" formControlName="evalGlobal"></app-item-rank> 
+              </div>
+              <div class="row">
+                <div class="form-group col">
+                  <label>Comentarios</label>
+                  <textarea class="form-control" formControlName="comentarios"></textarea>
+                  <small class="form-text text-muted">Otras apreciaciones fuera del alacance de la encuesta.</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <b>Alerta</b>
+                  <hr/>    
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col">
+                    <label>¿Existe alguna alerta que desee manifestar?</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
+                        <label class="form-check-label" for="hay-alerta">
+                          Si
+                        </label>
+                    </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="managementForm.value.alerta">
+                <div class="form-group col">
+                    <label>Que tienes que contar</label>
+                    <textarea class="form-control" formControlName="detalleAlerta"></textarea>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+          <ng-template ngbTabTitle><b>Historial</b></ng-template>
+          <ng-template ngbTabContent>
+            <pre>{{ managementForm.value | json }}</pre>
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-success" (click)="onSubmitGestion(); modal.close('Save click');" [disabled]="managementForm.invalid">Guardar</button>
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cerrar</button>
+    </div>
+  </ng-template>
+  

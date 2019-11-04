@@ -37,7 +37,7 @@
             <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" (cambiaEstado)="recibeFechas($event)" (itemClick)="open(content, $event)"></app-previsualizador>
 
             <div class="bg-light py-md-2">
-                <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid" *ngIf="esNuevo">Guardar</button>
+                <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid" *ngIf="esNuevo || estaEditando">Guardar</button>
                 <button class="btn btn-secondary btn-sm" type="button" (click)="goToHome()">Volver</button>
             </div>    
         </form>
@@ -135,15 +135,22 @@
               <div class="row">
                 <div class="form-group col">
                     <label>¿Existe alguna alerta que desee manifestar?</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
+                    <br/>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" value="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
                         <label class="form-check-label" for="hay-alerta">
                           Si
                         </label>
                     </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" value="0" formControlName="alerta" id="no-hay-alerta" (click)="onClickAlertCheck($event)">
+                        <label class="form-check-label" for="no-hay-alerta">
+                          No
+                        </label>
+                    </div>
                 </div>
               </div>
-              <div class="row" *ngIf="managementForm.value.alerta">
+              <div class="row" *ngIf="managementForm.value.alerta == 1"> 
                 <div class="form-group col">
                     <label>Que tienes que contar</label>
                     <textarea class="form-control" formControlName="detalleAlerta"></textarea>
@@ -155,7 +162,7 @@
         <ngb-tab>
           <ng-template ngbTabTitle><b>Historial</b></ng-template>
           <ng-template ngbTabContent>
-            <pre>{{ managementForm.value | json }}</pre>
+            
           </ng-template>
         </ngb-tab>
       </ngb-tabset>

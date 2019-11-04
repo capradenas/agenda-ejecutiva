@@ -20,6 +20,7 @@ export class DetalleAgendaComponent implements OnInit {
   ruta = ['Agenda'];
   fechasVisita: Date[];
   esNuevo: boolean = true;
+  estaEditando: boolean = false;
   closeResult: string;
   idCita?: number = null;
   type: string;
@@ -54,7 +55,7 @@ export class DetalleAgendaComponent implements OnInit {
       evalAsfam: ['', Validators.required],
       evalGlobal: ['', Validators.required],
       comentarios: ['', Validators.required],
-      alerta: '',
+      alerta: ['', Validators.required],
       detalleAlerta: ''
     })
     
@@ -89,6 +90,7 @@ export class DetalleAgendaComponent implements OnInit {
 
     }else if(this.type === 'editar-cita'){
       this.esNuevo = false;
+      this.estaEditando = true;
       this.ruta.push('Modificar Cita');
       console.log('editar')
       let vals = await this.empresaService.obtenerDetalleAgenda(Number.parseInt(wildcard))
@@ -182,7 +184,7 @@ export class DetalleAgendaComponent implements OnInit {
   }
 
   onClickAlertCheck(event: any){
-    const isChecked = event.target.checked; 
+    const isChecked = this.managementForm.value.alerta == 1;
     const detalleAlertaControl = this.managementForm.get('detalleAlerta');
 
     if(isChecked){

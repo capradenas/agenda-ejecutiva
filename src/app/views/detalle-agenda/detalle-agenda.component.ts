@@ -174,11 +174,12 @@ export class DetalleAgendaComponent implements OnInit {
     };
 
     let objetoMaestro = {
-      userInfo,
-      form: this.managementForm.value
+      
+      ...this.managementForm.value,
+      userInfo
     }
 
-    this.managementForm.reset();  
+    //this.managementForm.reset();  
 
     console.log({ objetoMaestro });
   }

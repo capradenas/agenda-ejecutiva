@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -53,7 +53,8 @@ export class PrevisualizadorComponent implements OnChanges {
           year: fec.year(),
           weekDay: fec.toDate().toLocaleString('default', { weekday: 'long' }).substr(0,3) + '.',
           day: fec.toDate().getDate().toLocaleString().padStart(2,'0'),
-          date: fec.toDate()
+          date: fec.toDate(),
+          id: undefined
         })
 
         fec = fec.add(this.periocidad, 'days');

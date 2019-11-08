@@ -6,7 +6,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { EmpresasService } from './../../services/empresas.service';
 import Agenda from './../../models/agenda.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-detalle-agenda',
@@ -25,6 +26,7 @@ export class DetalleAgendaComponent implements OnInit {
   idCita?: number = null;
   type: string;
   modeloPrueba: string = '';
+  regsss = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -75,6 +77,15 @@ export class DetalleAgendaComponent implements OnInit {
       this.esNuevo = true;
       this.ruta.push('Nueva Cita');
 
+      (await this.empresaService.obtenerContactosCompania(Number.parseInt(company))).subscribe(
+        (response: any) => {
+          this.regsss = response; 
+        },
+        (error: any) => {
+          console.error('DetalleAgendaComponent.ngOnInit', {error})
+        }
+      )
+
       let momento = moment(wildcard);
       let f = momento.toArray();
 
@@ -95,7 +106,7 @@ export class DetalleAgendaComponent implements OnInit {
       console.log('editar')
       let vals = await this.empresaService.obtenerDetalleAgenda(Number.parseInt(wildcard))
       vals.subscribe(
-        (detAgenda: any) => {
+        async (detAgenda: any) => {
           console.log({detAgenda});
           let momento = moment(detAgenda.fechaPrimeraVisita);
           let f = momento.toArray()
@@ -105,6 +116,15 @@ export class DetalleAgendaComponent implements OnInit {
             comments: detAgenda.comentarios,
             periodicity: detAgenda.periocidad
           });
+
+          (await this.empresaService.obtenerContactosCompania(detAgenda.idAnexoEmpresa)).subscribe(
+            (response: any) => {
+              this.regsss = response; 
+            },
+            (error: any) => {
+              console.error('DetalleAgendaComponent.ngOnInit', {error})
+            }
+          )
 
           this.eventForm.disable();
 
@@ -158,7 +178,7 @@ export class DetalleAgendaComponent implements OnInit {
   open(content, itemValue: any) {
     if(this.type === 'editar-cita'){
       console.log({ itemValue });
-      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl' }).result.then((result) => {
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' }).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;
       }, (reason) => {
         this.closeResult = `Dismissed ${reason}`;
@@ -166,22 +186,23 @@ export class DetalleAgendaComponent implements OnInit {
     }
   }
 
-  onSubmitGestion(){
+  async onSubmitGestion(){
     const userInfo = {
       rutEjecutivo: this.cookieService.get('Rut'), 
       codigoSucursal: Number.parseInt(this.cookieService.get('Oficina')),  
       token: this.cookieService.get('Token')
     };
 
-    let objetoMaestro = {
-      
-      ...this.managementForm.value,
-      userInfo
-    }
+    
 
     //this.managementForm.reset();  
+    (await this.empresaService.registrarGestion(userInfo, this.managementForm.value)).subscribe(
+      (response: any) => {
+        console.log('guardado correctamente')
+      }
+    ) 
 
-    console.log({ objetoMaestro });
+    console.log({ objetoMaestro: this.managementForm.value });
   }
 
   onClickAlertCheck(event: any){
@@ -197,4 +218,27 @@ export class DetalleAgendaComponent implements OnInit {
     detalleAlertaControl.updateValueAndValidity();
   }
 
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []
+        : this.regsss.filter(v => v.nombre.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0,10))
+    )
+    
+  formatter = (reg:any) => reg.nombre;
+
+  selectContacto = (event) => {
+    console.log({event})
+    const item = event.item;
+
+    this.managementForm.patchValue({
+      nombre: item.nombre,
+      estamento: item.estamento,
+      cargo: item.cargo.nombre,
+      telefono: item.fono,
+      email: item.mail,
+    })
+
+}
 }

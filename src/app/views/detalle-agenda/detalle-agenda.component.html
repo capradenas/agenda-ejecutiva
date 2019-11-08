@@ -66,8 +66,16 @@
               </div>
               <div class="row">
                   <div class="form-group col">
-                    <label>Nombre Contacto</label>
-                    <input type="text" class="form-control" formControlName="nombre">
+                    <label for="typeahead-basic">Nombre Contacto</label>
+                    <input  id="typeahead-basic" 
+                            type="text" 
+                            class="form-control" 
+                            formControlName="nombre" 
+                            [ngbTypeahead]="search"
+                            [inputFormatter]="formatter"
+                            [resultFormatter]="formatter"
+                            (selectItem)="selectContacto($event)"
+                            />
                     <small class="form-text text-muted">Nombre del contacto de la compañía.</small>
                   </div>
 

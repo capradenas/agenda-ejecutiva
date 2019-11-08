@@ -73,4 +73,14 @@ export class EmpresasService {
       }
     });
   }
+
+  async listarEstamentos(){
+    let endpoint = `${environment.apiUrl}/compania/lista-estamento`;
+    return await this.http.get(endpoint, {});
+  }
+
+  async listarCargos(nodo: number){
+    let endpoint = `${environment.apiUrl}/compania/lista-cargo/${nodo}`;
+    return await this.http.get(endpoint, {});
+  }
 }

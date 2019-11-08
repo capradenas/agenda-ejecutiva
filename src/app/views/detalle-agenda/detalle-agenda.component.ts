@@ -8,6 +8,7 @@ import Agenda from './../../models/agenda.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import { Gestion } from './../../models/gestion.interface';
 
 @Component({
   selector: 'app-detalle-agenda',
@@ -27,6 +28,11 @@ export class DetalleAgendaComponent implements OnInit {
   type: string;
   modeloPrueba: string = '';
   regsss = [];
+  estamentos = [];
+  cargos = [];
+  agendaInfo;
+  isSaving: boolean = false;
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +66,13 @@ export class DetalleAgendaComponent implements OnInit {
       alerta: ['', Validators.required],
       detalleAlerta: ''
     })
+
+    let wildcard = this.route.snapshot.paramMap.get('wildcard');
+    this.type = this.route.snapshot.paramMap.get('type');
+    if(this.type === 'editar-cita'){
+      this.agendaInfo = Number.parseInt(wildcard);
+    }
+
     
   }
 
@@ -70,26 +83,16 @@ export class DetalleAgendaComponent implements OnInit {
     }
 
     let wildcard = this.route.snapshot.paramMap.get('wildcard');
-    this.type = this.route.snapshot.paramMap.get('type');
     let company = this.route.snapshot.paramMap.get('company');
 
     if(this.type === 'nueva-cita'){
       this.esNuevo = true;
       this.ruta.push('Nueva Cita');
 
-      (await this.empresaService.obtenerContactosCompania(Number.parseInt(company))).subscribe(
-        (response: any) => {
-          this.regsss = response; 
-        },
-        (error: any) => {
-          console.error('DetalleAgendaComponent.ngOnInit', {error})
-        }
-      )
 
       let momento = moment(wildcard);
       let f = momento.toArray();
-
-
+      
       this.eventForm.setValue({
         startDate: { year: f[0], month: (f[1]+1), day: f[2], _d: momento.toDate() },
         company: company,
@@ -103,11 +106,10 @@ export class DetalleAgendaComponent implements OnInit {
       this.esNuevo = false;
       this.estaEditando = true;
       this.ruta.push('Modificar Cita');
-      console.log('editar')
+      this.agendaInfo = Number.parseInt(wildcard);
       let vals = await this.empresaService.obtenerDetalleAgenda(Number.parseInt(wildcard))
       vals.subscribe(
         async (detAgenda: any) => {
-          console.log({detAgenda});
           let momento = moment(detAgenda.fechaPrimeraVisita);
           let f = momento.toArray()
           this.eventForm.setValue({
@@ -135,6 +137,15 @@ export class DetalleAgendaComponent implements OnInit {
       )
       
     }
+
+
+    
+    (await this.empresaService.listarEstamentos()).subscribe(
+      (estamentos: any)=>{
+        this.estamentos = estamentos;
+      },
+      (error: any) => {console.log({error})}
+    );
   }
 
   async onSubmit(formData: any) {
@@ -178,6 +189,7 @@ export class DetalleAgendaComponent implements OnInit {
   open(content, itemValue: any) {
     if(this.type === 'editar-cita'){
       console.log({ itemValue });
+      this.idCita = itemValue.id;
       this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' }).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;
       }, (reason) => {
@@ -186,7 +198,9 @@ export class DetalleAgendaComponent implements OnInit {
     }
   }
 
+  /*WORKING HERE*/
   async onSubmitGestion(){
+    this.isSaving = true;
     const userInfo = {
       rutEjecutivo: this.cookieService.get('Rut'), 
       codigoSucursal: Number.parseInt(this.cookieService.get('Oficina')),  
@@ -194,15 +208,27 @@ export class DetalleAgendaComponent implements OnInit {
     };
 
     
+    let envioDTO: Gestion = {
+      ...this.managementForm.value,
+      estamento: this.managementForm.value.estamento.id,
+      nombre: this.managementForm.value.nombre.nombre !== undefined ? this.managementForm.value.nombre.nombre : this.managementForm.value.nombre,
+      contactoId: this.managementForm.value.nombre.id,
+      visitaId: this.idCita,
+    };
 
-    //this.managementForm.reset();  
-    (await this.empresaService.registrarGestion(userInfo, this.managementForm.value)).subscribe(
+    console.log({
+      envioDTO
+    });
+
+      
+    (await this.empresaService.registrarGestion(userInfo, envioDTO)).subscribe(
       (response: any) => {
-        console.log('guardado correctamente')
+        console.log('guardado correctamente', {response})
+        this.managementForm.reset();
+        alert('Gestion registrada exitosamente.');
+        this.modalService.dismissAll('save click');
       }
-    ) 
-
-    console.log({ objetoMaestro: this.managementForm.value });
+    )
   }
 
   onClickAlertCheck(event: any){
@@ -226,19 +252,47 @@ export class DetalleAgendaComponent implements OnInit {
         : this.regsss.filter(v => v.nombre.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0,10))
     )
     
-  formatter = (reg:any) => reg.nombre;
+  formatter(reg:any){
+    return reg.nombre;
+  } 
 
-  selectContacto = (event) => {
-    console.log({event})
+  selectContacto = async (event) => {
     const item = event.item;
 
     this.managementForm.patchValue({
       nombre: item.nombre,
-      estamento: item.estamento,
-      cargo: item.cargo.nombre,
+      estamento: item.estamento.id,
+      cargo: item.cargo.id,
       telefono: item.fono,
       email: item.mail,
-    })
+    });
 
-}
+    (await this.empresaService.listarCargos(item.estamento.nodo)).subscribe(
+      (ok: any)=>{
+        this.cargos = ok;
+      },
+      (error: any) => {
+        this.cargos = [];
+      }
+    )
+
+  }
+
+  async onChangeEstamento(event){
+
+    const valorSeleccionado = this.managementForm.value.estamento;
+    console.log({event, valorSeleccionado});
+    (await this.empresaService.listarCargos(valorSeleccionado.nodo)).subscribe(
+      (ok: any)=>{
+        this.cargos = ok;
+      },
+      (error: any) => {
+        this.cargos = [];
+      }
+    )
+    
+  }
+
+  
+
 }

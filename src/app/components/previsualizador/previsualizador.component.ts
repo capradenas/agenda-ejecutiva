@@ -1,15 +1,42 @@
-import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { EmpresasService } from './../../services/empresas.service';
 
 @Component({
   selector: 'app-previsualizador',
   templateUrl: './previsualizador.component.html',
   styleUrls: ['./previsualizador.component.scss']
 })
-export class PrevisualizadorComponent implements OnChanges {
+export class PrevisualizadorComponent implements OnChanges, OnInit {
   
+  private isEditing = false;
+  constructor(private readonly empresaService: EmpresasService) { }
+  
+  async ngOnInit() {
+    
+    if(this.agenda !== undefined){
+      this.isEditing = true;
+      (await this.empresaService.obtenerDetalleAgenda(this.agenda)).subscribe(
+        (agenda: any)=>{
+          agenda.visitas.forEach(element => {
+            const fec = moment(element.fechaVisita);
+            this.fechasVisita.push({
+              month: fec.toDate().toLocaleString('default', { month: 'long' }),
+              year: fec.year(),
+              weekDay: fec.toDate().toLocaleString('default', { weekday: 'long' }).substr(0,3) + '.',
+              day: fec.toDate().getDate().toLocaleString().padStart(2,'0'),
+              date: fec.toDate(),
+              id: element.id
+            })
+          });
+        }
+      )
+    }
 
-  constructor() { }
+  }
+  
+  @Input('agenda-info')
+  agenda?: number;  
 
   @Output()
   cambiaEstado: EventEmitter<any> = new EventEmitter<any>();
@@ -37,7 +64,7 @@ export class PrevisualizadorComponent implements OnChanges {
 
   private renderVisitas() {
     this.fechasVisita = [];
-    if(this.periocidad > 0){
+    if(this.periocidad > 0 && !this.isEditing){
       let fec = moment(this._fechaInicial);
       let division = 720 / this.periocidad;
       for(let i:number = 0; i<=division; i++) {

@@ -17,6 +17,6 @@ export interface Gestion {
     
     comentarios: string;
     
-    alerta: boolean;
+    alerta: number;
     detalleAlerta?: string;
 }

@@ -37,7 +37,7 @@ export class AgendaEjecutivaComponent implements OnInit  {
   async ngOnInit() {
     if(!this.cookieService.check('Token')){
       alert('No hay usuario desde MDN, Se debe Salir')
-      return false;
+      //return false;
     }
     this.userInfo = {
       rutEjecutivo: this.cookieService.get('Rut'), 
@@ -54,7 +54,6 @@ export class AgendaEjecutivaComponent implements OnInit  {
         console.log({error})
       }
     )
-    //console.log({data})
   }
   
   handleDateClick(arg) {

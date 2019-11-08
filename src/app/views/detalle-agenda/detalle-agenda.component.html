@@ -34,7 +34,7 @@
                 <small id="empresaHelp" class="form-text text-muted">Debes seleccionar la empresa para el evento.</small>
             </div>
 
-            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" (cambiaEstado)="recibeFechas($event)" (itemClick)="open(content, $event)"></app-previsualizador>
+            <app-previsualizador [(periocidad)]="eventForm.value.periodicity" [(fecha-inicial)]="eventForm.value.startDate" [agenda-info]="agendaInfo" (cambiaEstado)="recibeFechas($event)" (itemClick)="open(content, $event)"></app-previsualizador>
 
             <div class="bg-light py-md-2">
                 <button class="btn btn-primary btn-sm mx-md-1" type="submit" [disabled]="eventForm.invalid" *ngIf="esNuevo || estaEditando">Guardar</button>
@@ -66,17 +66,24 @@
               </div>
               <div class="row">
                   <div class="form-group col">
-                    <label>Nombre Contacto</label>
-                    <input type="text" class="form-control" formControlName="nombre">
+                    <label for="typeahead-basic">Nombre Contacto</label>
+                    <input  id="typeahead-basic" 
+                            type="text" 
+                            class="form-control" 
+                            formControlName="nombre" 
+                            [ngbTypeahead]="search"
+                            [inputFormatter]="formatter"
+                            [resultFormatter]="formatter"
+                            (selectItem)="selectContacto($event)"
+                            />
                     <small class="form-text text-muted">Nombre del contacto de la compañía.</small>
                   </div>
 
                   <div class="form-group col">
                       <label>Estamento</label>
-                      <select class="form-control" formControlName="estamento">
+                      <select class="form-control" formControlName="estamento" (change)="onChangeEstamento($event)">
                         <option value="">Selecciona</option>
-                        <option value="EMPRESA">Empresa</option>
-                        <option value="SINDICATO">Sindicato</option>
+                        <option *ngFor="let estamento of estamentos" [ngValue]="estamento" [value]="estamento.id">{{ estamento.nombre }}</option>
                       </select>
                       <small class="form-text text-muted">El estamento corresponde a la directiva del contacto.</small>
                   </div>
@@ -84,7 +91,10 @@
               <div class="row">
                   <div class="form-group col">
                     <label>Cargo</label>
-                    <input type="text" class="form-control" formControlName="cargo">
+                    <select class="form-control" formControlName="cargo">
+                      <option value="">Selecciona</option>
+                      <option *ngFor="let cargo of cargos" [value]="cargo.id">{{ cargo.nombre }}</option>
+                    </select>
                     <small class="form-text text-muted">Cargo del Contacto con respecto al estamento.</small>
                   </div>
                   <div class="form-group col">
@@ -134,13 +144,13 @@
                     <label>¿Existe alguna alerta que desee manifestar?</label>
                     <br/>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" value="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
+                        <input class="form-check-input" type="radio" [value]="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
                         <label class="form-check-label" for="hay-alerta">
                           Si
                         </label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" value="0" formControlName="alerta" id="no-hay-alerta" (click)="onClickAlertCheck($event)">
+                      <input class="form-check-input" type="radio" [value]="0" formControlName="alerta" id="no-hay-alerta" (click)="onClickAlertCheck($event)">
                         <label class="form-check-label" for="no-hay-alerta">
                           No
                         </label>
@@ -165,7 +175,7 @@
       </ngb-tabset>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-success" (click)="onSubmitGestion(); modal.close('Save click');" [disabled]="managementForm.invalid">Guardar</button>
+      <button type="button" class="btn btn-outline-success" (click)="onSubmitGestion();" [disabled]="managementForm.invalid || isSaving">Guardar</button>
       <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Cerrar</button>
     </div>
   </ng-template>

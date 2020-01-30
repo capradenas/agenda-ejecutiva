@@ -60,107 +60,145 @@
             <form class="my-3" [formGroup]="managementForm">
               <div class="row">
                 <div class="col">
-                  <b>Contacto</b>
-                  <hr/>    
-                </div>
-              </div>
-              <div class="row">
-                  <div class="form-group col">
-                    <label for="typeahead-basic">Nombre Contacto</label>
-                    <input  id="typeahead-basic" 
-                            type="text" 
-                            class="form-control" 
-                            formControlName="nombre" 
-                            [ngbTypeahead]="search"
-                            [inputFormatter]="formatter"
-                            [resultFormatter]="formatter"
-                            (selectItem)="selectContacto($event)"
-                            />
-                    <small class="form-text text-muted">Nombre del contacto de la compañía.</small>
-                  </div>
-
-                  <div class="form-group col">
-                      <label>Estamento</label>
-                      <select class="form-control" formControlName="estamento" (change)="onChangeEstamento($event)">
-                        <option value="">Selecciona</option>
-                        <option *ngFor="let estamento of estamentos" [ngValue]="estamento" [value]="estamento.id">{{ estamento.nombre }}</option>
-                      </select>
-                      <small class="form-text text-muted">El estamento corresponde a la directiva del contacto.</small>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="form-group col">
-                    <label>Cargo</label>
-                    <select class="form-control" formControlName="cargo">
-                      <option value="">Selecciona</option>
-                      <option *ngFor="let cargo of cargos" [value]="cargo.id">{{ cargo.nombre }}</option>
-                    </select>
-                    <small class="form-text text-muted">Cargo del Contacto con respecto al estamento.</small>
-                  </div>
-                  <div class="form-group col">
-                    <label>Telefono</label>
-                    <input type="text" class="form-control" formControlName="telefono">
-                    <small class="form-text text-muted">Telefono del contacto.</small>
-                  </div>
-                  <div class="form-group col">
-                    <label>Email</label>
-                    <input type="text" class="form-control" formControlName="email">
-                    <small class="form-text text-muted">Email del contacto.</small>
-                  </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <b>Suvery</b>
-                  <hr/>    
-                </div>
-              </div>
-              <div class="row">
-                  <app-item-rank class="col" nombre="credito" titulo="Crédito" leyenda="Evaluación con respecto a Créditos" formControlName="evalCredito"></app-item-rank>
-                  <app-item-rank class="col" nombre="sil" titulo="Licencias Médicas" leyenda="Evaluación con respecto a SIL" formControlName="evalSil"></app-item-rank>
-              </div>
-              <div class="row">
-                  <app-item-rank class="col" nombre="servicio" titulo="Servicio" leyenda="Evaluación con respecto a Servicios" formControlName="evalServicio"></app-item-rank>
-                  <app-item-rank class="col" nombre="pcom" titulo="Prestaciones Complementarias" leyenda="Evaluación con respecto a Prestaciones Complementarias" formControlName="evalPcom"></app-item-rank> 
-              </div>
-              <div class="row">
-                  <app-item-rank class="col" nombre="asfam" titulo="ASFAM" leyenda="Evaluación con respecto a ASFAM" formControlName="evalAsfam"></app-item-rank>
-                  <app-item-rank class="col" nombre="global" titulo="Global" leyenda="Evaluación Global" formControlName="evalGlobal"></app-item-rank> 
-              </div>
-              <div class="row">
-                <div class="form-group col">
-                  <label>Comentarios</label>
-                  <textarea class="form-control" formControlName="comentarios"></textarea>
-                  <small class="form-text text-muted">Otras apreciaciones fuera del alacance de la encuesta.</small>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <b>Alerta</b>
-                  <hr/>    
+                  <b>Cita</b>
                 </div>
               </div>
               <div class="row">
                 <div class="form-group col">
-                    <label>¿Existe alguna alerta que desee manifestar?</label>
-                    <br/>
+                  <label>¿Pude concretar la Cita?</label>
+                  <br/>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" [value]="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
-                        <label class="form-check-label" for="hay-alerta">
+                        <input class="form-check-input" type="radio" [value]="1" formControlName="cita"  id="si-conctrete-cita" >
+                        <label class="form-check-label" for="si-conctrete-cita">
                           Si
                         </label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" [value]="0" formControlName="alerta" id="no-hay-alerta" (click)="onClickAlertCheck($event)">
-                        <label class="form-check-label" for="no-hay-alerta">
+                      <input class="form-check-input" type="radio" [value]="0"  formControlName="cita" id="no-concrete-cita">
+                        <label class="form-check-label" for="no-concrete-cita">
                           No
                         </label>
                     </div>
                 </div>
               </div>
-              <div class="row" *ngIf="managementForm.value.alerta == 1"> 
-                <div class="form-group col">
-                    <label>Que tienes que contar</label>
-                    <textarea class="form-control" formControlName="detalleAlerta"></textarea>
+              <div class="row" *ngIf="managementForm.value.cita == 0">
+                <div class="form-group col-6">
+                  <label>Fecha Nueva Gestión</label>
+                  <input type="date" class="form-control" formControlName="fechaNuevaGestion">
+                  <small class="form-text text-muted">Ingresa la nueva fecha de acercamiento.</small>
+                </div>
+                <div class="form-group col-12">
+                  <label>Comentarios</label>
+                  <textarea class="form-control" formControlName="comentarios"></textarea>
+                </div>
+                                
+              </div>
+
+              <div *ngIf="managementForm.value.cita == 1">
+                <div class="row">
+                  <div class="col">
+                    <b>Contacto</b>
+                    <hr/>    
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                      <label for="typeahead-basic">Nombre Contacto</label>
+                      <input  id="typeahead-basic" 
+                              type="text" 
+                              class="form-control" 
+                              formControlName="nombre" 
+                              [ngbTypeahead]="search"
+                              [inputFormatter]="formatter"
+                              [resultFormatter]="formatter"
+                              (selectItem)="selectContacto($event)"
+                              />
+                      <small class="form-text text-muted">Nombre del contacto de la compañía.</small>
+                    </div>
+  
+                    <div class="form-group col">
+                        <label>Estamento</label>
+                        <select class="form-control" formControlName="estamento" (change)="onChangeEstamento($event)">
+                          <option value="">Selecciona</option>
+                          <option *ngFor="let estamento of estamentos" [ngValue]="estamento" [value]="estamento.id">{{ estamento.nombre }}</option>
+                        </select>
+                        <small class="form-text text-muted">El estamento corresponde a la directiva del contacto.</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                      <label>Cargo</label>
+                      <select class="form-control" formControlName="cargo">
+                        <option value="">Selecciona</option>
+                        <option *ngFor="let cargo of cargos" [value]="cargo.id">{{ cargo.nombre }}</option>
+                      </select>
+                      <small class="form-text text-muted">Cargo del Contacto con respecto al estamento.</small>
+                    </div>
+                    <div class="form-group col">
+                      <label>Telefono</label>
+                      <input type="text" class="form-control" formControlName="telefono">
+                      <small class="form-text text-muted">Telefono del contacto.</small>
+                    </div>
+                    <div class="form-group col">
+                      <label>Email</label>
+                      <input type="text" class="form-control" formControlName="email">
+                      <small class="form-text text-muted">Email del contacto.</small>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <b>Suvery</b>
+                    <hr/>    
+                  </div>
+                </div>
+                <div class="row">
+                    <app-item-rank class="col" nombre="credito" titulo="Crédito" leyenda="Evaluación con respecto a Créditos" formControlName="evalCredito"></app-item-rank>
+                    <app-item-rank class="col" nombre="sil" titulo="Licencias Médicas" leyenda="Evaluación con respecto a SIL" formControlName="evalSil"></app-item-rank>
+                </div>
+                <div class="row">
+                    <app-item-rank class="col" nombre="servicio" titulo="Servicio" leyenda="Evaluación con respecto a Servicios" formControlName="evalServicio"></app-item-rank>
+                    <app-item-rank class="col" nombre="pcom" titulo="Prestaciones Complementarias" leyenda="Evaluación con respecto a Prestaciones Complementarias" formControlName="evalPcom"></app-item-rank> 
+                </div>
+                <div class="row">
+                    <app-item-rank class="col" nombre="asfam" titulo="ASFAM" leyenda="Evaluación con respecto a ASFAM" formControlName="evalAsfam"></app-item-rank>
+                    <app-item-rank class="col" nombre="global" titulo="Global" leyenda="Evaluación Global" formControlName="evalGlobal"></app-item-rank> 
+                </div>
+                <div class="row">
+                  <div class="form-group col">
+                    <label>Comentarios</label>
+                    <textarea class="form-control" formControlName="comentarios"></textarea>
+                    <small class="form-text text-muted">Otras apreciaciones fuera del alacance de la encuesta.</small>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <b>Alerta</b>
+                    <hr/>    
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col">
+                      <label>¿Existe alguna alerta que desee manifestar?</label>
+                      <br/>
+                      <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" [value]="1" formControlName="alerta" id="hay-alerta" (click)="onClickAlertCheck($event)">
+                          <label class="form-check-label" for="hay-alerta">
+                            Si
+                          </label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" [value]="0" formControlName="alerta" id="no-hay-alerta" (click)="onClickAlertCheck($event)">
+                          <label class="form-check-label" for="no-hay-alerta">
+                            No
+                          </label>
+                      </div>
+                  </div>
+                </div>
+                <div class="row" *ngIf="managementForm.value.alerta == 1"> 
+                  <div class="form-group col">
+                      <label>Que tienes que contar</label>
+                      <textarea class="form-control" formControlName="detalleAlerta"></textarea>
+                  </div>
                 </div>
               </div>
             </form>
@@ -172,6 +210,7 @@
             
           </ng-template>
         </ngb-tab>
+       
       </ngb-tabset>
     </div>
     <div class="modal-footer">

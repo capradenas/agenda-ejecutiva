@@ -64,7 +64,9 @@ export class DetalleAgendaComponent implements OnInit {
       evalGlobal: ['', Validators.required],
       comentarios: ['', Validators.required],
       alerta: ['', Validators.required],
-      detalleAlerta: ''
+      detalleAlerta: '',
+      cita: 1,
+      fechaNuevaGestion: ''
     })
 
     let wildcard = this.route.snapshot.paramMap.get('wildcard');
@@ -190,7 +192,7 @@ export class DetalleAgendaComponent implements OnInit {
     if(this.type === 'editar-cita'){
       console.log({ itemValue });
       this.idCita = itemValue.id;
-      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'lg' }).result.then((result) => {
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: 'xl' }).result.then((result) => {
         this.closeResult = `Closed with: ${result}`;
       }, (reason) => {
         this.closeResult = `Dismissed ${reason}`;

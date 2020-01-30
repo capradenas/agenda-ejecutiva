@@ -21,6 +21,10 @@
             <input class="form-check-input" type="radio" [name]="nombre" [id]="nombre+'5'" value="5" [(ngModel)]="valor" (change)="myChange()">
             <label class="form-check-label" [for]="nombre+'5'">5</label>
         </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" [name]="nombre" [id]="nombre+'NA'" value="NA" [(ngModel)]="valor" (change)="myChange()">
+            <label class="form-check-label" [for]="nombre+'NA'">NA</label>
+        </div>
     </div>
     <small *ngIf="leyenda && leyenda.length > 0" class="form-text text-muted">{{ leyenda }}</small>
 </div> 
